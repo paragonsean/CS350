@@ -40,14 +40,31 @@ public class Course implements Cloneable {
 
     // Getters and setters
     public String getCRN() { return CRN; }
+    public void setCRN(String CRN) { this.CRN = CRN; }
+
     public String getSUBJ() { return SUBJ; }
+    public void setSUBJ(String SUBJ) { this.SUBJ = SUBJ; }
+
     public String getCRSE() { return CRSE; }
+    public void setCRSE(String CRSE) { this.CRSE = CRSE; }
+
     public int getXLST_CAP() { return XLST_CAP; }
+    public void setXLST_CAP(int XLST_CAP) { this.XLST_CAP = XLST_CAP; }
+
     public int getENR() { return ENR; }
+    public void setENR(int ENR) { this.ENR = ENR; }
+
     public String getLINK() { return LINK; }
+    public void setLINK(String LINK) { this.LINK = LINK; }
+
     public String getXLST_GROUP() { return XLST_GROUP; }
+    public void setXLST_GROUP(String XLST_GROUP) { this.XLST_GROUP = XLST_GROUP; }
+
     public int getOVERALL_CAP() { return OVERALL_CAP; }
+    public void setOVERALL_CAP(int OVERALL_CAP) { this.OVERALL_CAP = OVERALL_CAP; }
+
     public int getOVERALL_ENR() { return OVERALL_ENR; }
+    public void setOVERALL_ENR(int OVERALL_ENR) { this.OVERALL_ENR = OVERALL_ENR; }
 
     // Implement the clone() method
     @Override
