@@ -1,21 +1,20 @@
-package edu.odu.cs.cs350;
+package edu.odu.cs.cs350.enp;
 
 import java.util.Objects;
 
 public class Course implements Cloneable {
-    private String CRN;
-    private String SUBJ;
-    private String CRSE;
-    private int XLST_CAP;
-    private int ENR;
-    private String LINK;
-    private String XLST_GROUP;
-    private int OVERALL_CAP;
-    private int OVERALL_ENR;
-    private String snapshotDate;
+    private String CRN;           // Unique identifier for each section
+    private String SUBJ;          // Department offering the course (e.g., "CS")
+    private String CRSE;          // Course number (e.g., "350")
+    private int XLST_CAP;         // Cross-list cap (maximum students in the section)
+    private int ENR;              // Number of students enrolled
+    private String LINK;          // Lab/recitation link code
+    private String XLST_GROUP;    // Cross-list group identifier
+    private int OVERALL_CAP;      // Maximum number of students in the overall offering
+    private int OVERALL_ENR;      // Total students enrolled in the overall offering
 
     // Constructor
-    public Course(String CRN, String SUBJ, String CRSE, int XLST_CAP, int ENR, String LINK, String XLST_GROUP, int OVERALL_CAP, int OVERALL_ENR, String snapshotDate) {
+    public Course(String CRN, String SUBJ, String CRSE, int XLST_CAP, int ENR, String LINK, String XLST_GROUP, int OVERALL_CAP, int OVERALL_ENR) {
         this.CRN = CRN;
         this.SUBJ = SUBJ;
         this.CRSE = CRSE;
@@ -25,7 +24,18 @@ public class Course implements Cloneable {
         this.XLST_GROUP = XLST_GROUP;
         this.OVERALL_CAP = OVERALL_CAP;
         this.OVERALL_ENR = OVERALL_ENR;
-        this.snapshotDate = snapshotDate;
+    }
+
+    public Course() {
+        this.CRN = "";
+        this.SUBJ = "";
+        this.CRSE = "";
+        this.XLST_CAP = 0;
+        this.ENR = 0;
+        this.LINK = "";
+        this.XLST_GROUP = "";
+        this.OVERALL_CAP = 0;
+        this.OVERALL_ENR = 0;
     }
 
     // Getters and setters
@@ -38,7 +48,6 @@ public class Course implements Cloneable {
     public String getXLST_GROUP() { return XLST_GROUP; }
     public int getOVERALL_CAP() { return OVERALL_CAP; }
     public int getOVERALL_ENR() { return OVERALL_ENR; }
-    public String getSnapshotDate() { return snapshotDate; }
 
     // Implement the clone() method
     @Override
@@ -46,7 +55,6 @@ public class Course implements Cloneable {
         try {
             return (Course) super.clone();  // Shallow copy, since all fields are primitives or immutable (String)
         } catch (CloneNotSupportedException e) {
-            // This shouldn't happen, since we're implementing Cloneable
             throw new AssertionError();
         }
     }
@@ -54,7 +62,7 @@ public class Course implements Cloneable {
     // Override the hashCode() method
     @Override
     public int hashCode() {
-        return Objects.hash(CRN, SUBJ, CRSE, XLST_CAP, ENR, LINK, XLST_GROUP, OVERALL_CAP, OVERALL_ENR, snapshotDate);
+        return Objects.hash(CRN, SUBJ, CRSE, XLST_CAP, ENR, LINK, XLST_GROUP, OVERALL_CAP, OVERALL_ENR);
     }
 
     // Override the equals() method (for consistency with hashCode)
@@ -71,8 +79,7 @@ public class Course implements Cloneable {
                 Objects.equals(SUBJ, course.SUBJ) &&
                 Objects.equals(CRSE, course.CRSE) &&
                 Objects.equals(LINK, course.LINK) &&
-                Objects.equals(XLST_GROUP, course.XLST_GROUP) &&
-                Objects.equals(snapshotDate, course.snapshotDate);
+                Objects.equals(XLST_GROUP, course.XLST_GROUP);
     }
 
     // toString() method for easier debugging
@@ -88,7 +95,6 @@ public class Course implements Cloneable {
                 ", XLST_GROUP='" + XLST_GROUP + '\'' +
                 ", OVERALL_CAP=" + OVERALL_CAP +
                 ", OVERALL_ENR=" + OVERALL_ENR +
-                ", snapshotDate='" + snapshotDate + '\'' +
                 '}';
     }
 }

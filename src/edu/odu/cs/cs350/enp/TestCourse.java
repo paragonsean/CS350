@@ -14,13 +14,13 @@ public class TestCourse {
 
     @BeforeEach
     public void setUp() {
-        course1 = new Course("12345", "CS", "350", 100, 90, "A1", "B1", 200, 180, "2024-10-10");
-        course2 = new Course("67890", "MATH", "101", 50, 40, "B2", "C3", 100, 80, "2024-10-10");
-        course3 = new Course("12345", "CS", "350", 100, 90, "A1", "B1", 200, 180, "2024-10-10");  // Same as course1
+        course1 = new Course("12345", "CS", "350", 100, 90, "A1", "B1", 200, 180);
+        course2 = new Course("67890", "MATH", "101", 50, 40, "B2", "C3", 100, 80);
+        course3 = new Course("12345", "CS", "350", 100, 90, "A1", "B1", 200, 180);
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#Course(String, String, String, int, int, String, String, int, int, String)}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#Course(String, String, String, int, int, String, String, int, int, String)}.
      */
     @Test
     public void testCourseConstructor() {
@@ -33,11 +33,11 @@ public class TestCourse {
         assertThat(course1.getXLST_GROUP(), equalTo("B1"));
         assertThat(course1.getOVERALL_CAP(), is(200));
         assertThat(course1.getOVERALL_ENR(), is(180));
-        assertThat(course1.getSnapshotDate(), equalTo("2024-10-10"));
+  
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#equals(Object)}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#equals(Object)}.
      */
     @Test
     public void testEquals() {
@@ -48,7 +48,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#hashCode()}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#hashCode()}.
      */
     @Test
     public void testHashCode() {
@@ -59,7 +59,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#clone()}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#clone()}.
      */
     @Test
     public void testClone() {
@@ -79,11 +79,11 @@ public class TestCourse {
         assertThat(clonedCourse.getXLST_GROUP(), equalTo(course1.getXLST_GROUP()));
         assertThat(clonedCourse.getOVERALL_CAP(), is(course1.getOVERALL_CAP()));
         assertThat(clonedCourse.getOVERALL_ENR(), is(course1.getOVERALL_ENR()));
-        assertThat(clonedCourse.getSnapshotDate(), equalTo(course1.getSnapshotDate()));
+      
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#toString()}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#toString()}.
      */
     @Test
     public void testToString() {
