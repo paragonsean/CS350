@@ -9,16 +9,16 @@ import java.util.logging.Logger;
 
 public class EnrollmentProjection {
 
-    private static final Logger logger = Logger.getLogger(EnrollmentProjection.class.getName());
+    protected static final Logger logger = Logger.getLogger(EnrollmentProjection.class.getName());
 
-    private List<String> historicalSemesterDirs;
-    private String targetSemesterDir;
-    private String outputFile;
-    private LocalDate endDate;
-    private LocalDate defaultEndDate;
-    private DateTimeFormatter dateFormatter;
-    private DateValidator dateValidator;
-    private SemesterSnapshotReader snapshotProcessor;
+    protected List<String> historicalSemesterDirs;
+    protected String targetSemesterDir;
+    protected String outputFile;
+    protected LocalDate endDate;
+    protected LocalDate defaultEndDate;
+    protected DateTimeFormatter dateFormatter;
+    protected DateValidator dateValidator;
+    protected SemesterSnapshotReader snapshotProcessor;
 
     public EnrollmentProjection(List<String> historicalSemesterDirs, String targetSemesterDir, String outputFile, String endDateStr) throws Exception {
         this.historicalSemesterDirs = historicalSemesterDirs;
@@ -31,7 +31,7 @@ public class EnrollmentProjection {
     }
 
     // Resolves end date or returns a default one
-    private LocalDate resolveEndDate(String endDateStr) {
+    protected LocalDate resolveEndDate(String endDateStr) {
         this.defaultEndDate = LocalDate.parse("2024-08-01", dateFormatter);
         if (endDateStr != null) {
             return LocalDate.parse(endDateStr, dateFormatter);
@@ -47,7 +47,7 @@ public class EnrollmentProjection {
     }
 
     // Processes all historical semesters
-    private List<List<Course>> processAllHistoricalSemesters() {
+    protected List<List<Course>> processAllHistoricalSemesters() {
         List<List<Course>> historicalData = new ArrayList<>();
         for (String semesterDir : this.historicalSemesterDirs) {
             List<Course> semesterData = processIndividualSemester(semesterDir);
@@ -59,7 +59,7 @@ public class EnrollmentProjection {
     }
 
     // Processes the target semester
-    private List<Course> processTargetSemester() throws Exception {
+    protected List<Course> processTargetSemester() throws Exception {
         try {
             logger.info("Processing target semester: " + this.targetSemesterDir);
             return processSemester(this.targetSemesterDir);
@@ -85,7 +85,7 @@ public class EnrollmentProjection {
     }
 
     // Collects course data for a semester based on snapshots
-    private List<Course> collectSemesterData(List<Snapshot> snapshots, String semesterDir) throws Exception {
+    protected List<Course> collectSemesterData(List<Snapshot> snapshots, String semesterDir) throws Exception {
         List<Course> semesterData = new ArrayList<>();
         for (Snapshot snapshot : snapshots) {
             String snapshotPath = getSnapshotPath(semesterDir, snapshot);
@@ -95,17 +95,17 @@ public class EnrollmentProjection {
     }
 
     // Generates the report for the projection
-    private void generateReport(List<Course> semesterData, LocalDate preRegistrationStart, LocalDate addDeadline, LocalDate lastSnapshotDate) throws Exception {
+    protected void generateReport(List<Course> semesterData, LocalDate preRegistrationStart, LocalDate addDeadline, LocalDate lastSnapshotDate) throws Exception {
         // Logic for generating the report goes here
     }
 
     // Generates snapshot path
-    private String getSnapshotPath(String semesterDir, Snapshot snapshot) {
+    protected String getSnapshotPath(String semesterDir, Snapshot snapshot) {
         return Paths.get(semesterDir, snapshot.getFileName()).toString();
     }
 
     // Processes an individual semester safely (catches errors)
-    private List<Course> processIndividualSemester(String semesterDir) {
+    protected List<Course> processIndividualSemester(String semesterDir) {
         try {
             logger.info("Processing historical semester: " + semesterDir);
             return processSemester(semesterDir);
@@ -136,7 +136,7 @@ public class EnrollmentProjection {
     }
 
     // Extracts historical semester directories from the arguments
-    private static List<String> extractHistoricalSemesterDirs(String[] args) {
+    protected static List<String> extractHistoricalSemesterDirs(String[] args) {
         List<String> historicalSemesterDirs = new ArrayList<>();
         for (int i = 0; i < args.length - 3; i++) {
             historicalSemesterDirs.add(args[i]);
@@ -145,7 +145,7 @@ public class EnrollmentProjection {
     }
 
     // Extracts the end date string from the arguments if provided
-    private static String extractEndDateStr(String[] args) {
+    protected static String extractEndDateStr(String[] args) {
         if (args.length >= 5) {
             return args[args.length - 1];
         }
