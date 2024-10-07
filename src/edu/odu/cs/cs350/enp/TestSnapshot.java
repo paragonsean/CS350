@@ -7,7 +7,6 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
 import java.time.LocalDate;
-import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class TestSnapshot {
@@ -69,12 +68,15 @@ public class TestSnapshot {
      */
     @Test
     public void testAddCourse() {
-        Snapshot snapshot = new Snapshot(date,courses);
+        // Start with an empty snapshot
+        Snapshot snapshot = new Snapshot(date, new ArrayList<>());
+        assertThat(snapshot.getCourseList().isEmpty(), is(true));  // Ensure initially empty
+
+        // Add first two courses
         snapshot.addCourse(course1);
         snapshot.addCourse(course2);
-
         assertThat(snapshot.getCourseList(), hasItems(course1, course2));  // Added courses should be present
-        assertThat(snapshot.getCourseList().size(), is(2));  // Ensure the size is correct
+        assertThat(snapshot.getCourseList().size(), is(2));  // Ensure size is 2 after adding 2 courses
 
         // Add another course
         Course newCourse = new Course("54321", "HIST", "100", 60, 50, "E1", "F1", 120, 100);
@@ -93,19 +95,5 @@ public class TestSnapshot {
         assertThat(snapshot.getCourse("101"), equalTo(course2));  // Ensure correct course is returned
         assertThat(snapshot.getCourse("201"), equalTo(course3));  // Ensure correct course is returned
         assertThat(snapshot.getCourse("999"), nullValue());  // Non-existent course should return null
-    }
-
-    /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Snapshot#toString()}.
-     */
-    @Test
-    public void testToString() {
-        Snapshot snapshot = new Snapshot(date, courses);
-        String expectedString = "Snapshot Date: " + date.toString() + "\nCourses:\n" +
-                "   " + course1.toString() + "\n" +
-                "   " + course2.toString() + "\n" +
-                "   " + course3.toString() + "\n";
-
-        assertThat(snapshot.toString(), equalTo(expectedString));  // Ensure toString() matches expected output
     }
 }

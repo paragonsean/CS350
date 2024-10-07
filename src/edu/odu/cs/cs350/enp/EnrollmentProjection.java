@@ -5,7 +5,7 @@ import java.nio.file.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Logger;
-
+import java.time.LocalDate;
 public class EnrollmentProjection {
 
     private static final Logger logger = Logger.getLogger(EnrollmentProjection.class.getName());
@@ -74,9 +74,9 @@ public class EnrollmentProjection {
         Date[] dates = dateValidator.validateDatesTxt(semesterDir);
         Date preRegistrationStart = dates[0];
         Date addDeadline = dates[1];
-
+        
         List<Snapshot> validSnapshots = snapshotProcessor.getValidSnapshots(semesterDir, preRegistrationStart, addDeadline);
-        Date lastSnapshotDate = validSnapshots.get(validSnapshots.size() - 1).getDate();
+        LocalDate lastSnapshotDate = validSnapshots.get(validSnapshots.size() - 1).getDate();
 
         List<Course> semesterData = collectSemesterData(validSnapshots, semesterDir);
         generateReport(semesterData, preRegistrationStart, addDeadline, lastSnapshotDate);
@@ -96,7 +96,7 @@ public class EnrollmentProjection {
 
     // Generates the report for the projection
     private void generateReport(List<Course> semesterData, Date preRegistrationStart, Date addDeadline, Date lastSnapshotDate) throws Exception {
-        reportGenerator.generateProjectionReport(semesterData, preRegistrationStart, addDeadline, lastSnapshotDate);
+        return;
     }
 
     // Generates snapshot path
