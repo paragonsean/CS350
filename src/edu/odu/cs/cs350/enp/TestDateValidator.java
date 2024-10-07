@@ -5,21 +5,20 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.IOException;
 import java.nio.file.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class TestDateValidator {
 
     private DateValidator dateValidator;
     private String tempSemesterDir;
-    private SimpleDateFormat dateFormat;
+    private DateTimeFormatter dateFormatter;
 
     @BeforeEach
     public void setUp() throws IOException {
-        dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateValidator = new DateValidator(dateFormat);
+        dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        dateValidator = new DateValidator(dateFormatter);
 
         // Create a temporary directory for testing
         tempSemesterDir = "test_semester_dir";
@@ -33,45 +32,14 @@ public class TestDateValidator {
     }
 
     /**
-     * Method to get the file path for dates.txt.
-     */
-    private Path getDatesFilePath(String semesterDir) throws IOException {
-        Path datesFile = Paths.get(semesterDir, "dates.txt");
-        if (!Files.exists(datesFile)) {
-            throw new IOException("Missing dates.txt in " + Paths.get(semesterDir).getFileName());
-        }
-        return datesFile;
-    }
-
-    /**
-     * Method to read the dates.txt file and return its lines.
-     */
-    private List<String> readDatesFile(Path datesFile) throws IOException {
-        List<String> lines = Files.readAllLines(datesFile);
-        if (lines.size() < 2) {
-            throw new IOException("Invalid dates.txt format in " + datesFile.getFileName());
-        }
-        return lines;
-    }
-
-    /**
-     * Method to parse the lines from dates.txt into Date objects.
-     */
-    private Date[] parseDates(List<String> lines) throws ParseException {
-        Date preRegistrationStart = dateFormat.parse(lines.get(0).trim());
-        Date addDeadline = dateFormat.parse(lines.get(1).trim());
-        return new Date[]{preRegistrationStart, addDeadline};
-    }
-
-    /**
      * Test method for validateDatesTxt.
      */
     @Test
-    public void testValidateDatesTxt() throws IOException, ParseException {
-        Date[] dates = dateValidator.validateDatesTxt(tempSemesterDir);
+    public void testValidateDatesTxt() throws IOException {
+        LocalDate[] dates = dateValidator.validateDatesTxt(tempSemesterDir);
 
-        Date expectedPreRegistrationStart = dateFormat.parse("2024-01-10");
-        Date expectedAddDeadline = dateFormat.parse("2024-01-31");
+        LocalDate expectedPreRegistrationStart = LocalDate.parse("2024-01-10", dateFormatter);
+        LocalDate expectedAddDeadline = LocalDate.parse("2024-01-31", dateFormatter);
 
         assertNotNull(dates);
         assertEquals(2, dates.length);
@@ -84,7 +52,7 @@ public class TestDateValidator {
      */
     @Test
     public void testGetDatesFilePath() throws IOException {
-        Path datesFilePath = getDatesFilePath(tempSemesterDir);
+        Path datesFilePath = Paths.get(tempSemesterDir, "dates.txt");
         assertTrue(Files.exists(datesFilePath));
     }
 
@@ -102,7 +70,7 @@ public class TestDateValidator {
         }
 
         IOException thrown = assertThrows(IOException.class, () -> {
-            getDatesFilePath(tempSemesterDir);
+            dateValidator.validateDatesTxt(tempSemesterDir);
         });
 
         assertEquals("Missing dates.txt in test_semester_dir", thrown.getMessage());
@@ -119,24 +87,9 @@ public class TestDateValidator {
         Files.write(datesFilePath, invalidDatesContent);
 
         IOException thrown = assertThrows(IOException.class, () -> {
-            readDatesFile(datesFilePath);
+            dateValidator.validateDatesTxt(tempSemesterDir);
         });
 
         assertEquals("Invalid dates.txt format in dates.txt", thrown.getMessage());
-    }
-
-    /**
-     * Test method for parseDates.
-     */
-    @Test
-    public void testParseDates() throws ParseException {
-        List<String> datesContent = List.of("2024-01-10", "2024-01-31");
-        Date[] parsedDates = parseDates(datesContent);
-
-        Date expectedPreRegistrationStart = dateFormat.parse("2024-01-10");
-        Date expectedAddDeadline = dateFormat.parse("2024-01-31");
-
-        assertEquals(expectedPreRegistrationStart, parsedDates[0]);
-        assertEquals(expectedAddDeadline, parsedDates[1]);
     }
 }

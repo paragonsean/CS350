@@ -1,11 +1,12 @@
 package edu.odu.cs.cs350.enp;
 
-import java.io.*;
+import java.io.IOException;
 import java.nio.file.*;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
-import java.time.LocalDate;
+
 public class EnrollmentProjection {
 
     private static final Logger logger = Logger.getLogger(EnrollmentProjection.class.getName());
@@ -13,28 +14,27 @@ public class EnrollmentProjection {
     private List<String> historicalSemesterDirs;
     private String targetSemesterDir;
     private String outputFile;
-    private Date endDate;
-    private Date defaultEndDate;
-    private SimpleDateFormat dateFormat;
+    private LocalDate endDate;
+    private LocalDate defaultEndDate;
+    private DateTimeFormatter dateFormatter;
     private DateValidator dateValidator;
     private SemesterSnapshotReader snapshotProcessor;
-   
 
     public EnrollmentProjection(List<String> historicalSemesterDirs, String targetSemesterDir, String outputFile, String endDateStr) throws Exception {
         this.historicalSemesterDirs = historicalSemesterDirs;
         this.targetSemesterDir = targetSemesterDir;
         this.outputFile = outputFile;
-        this.dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        this.dateValidator = new DateValidator(dateFormat);
- 
+        this.dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        this.dateValidator = new DateValidator(dateFormatter);
+
         this.endDate = resolveEndDate(endDateStr);
     }
 
     // Resolves end date or returns a default one
-    private Date resolveEndDate(String endDateStr) throws Exception {
-        this.defaultEndDate = dateFormat.parse("2024-08-01");
+    private LocalDate resolveEndDate(String endDateStr) {
+        this.defaultEndDate = LocalDate.parse("2024-08-01", dateFormatter);
         if (endDateStr != null) {
-            return dateFormat.parse(endDateStr);
+            return LocalDate.parse(endDateStr, dateFormatter);
         }
         return this.defaultEndDate;
     }
@@ -71,10 +71,10 @@ public class EnrollmentProjection {
 
     // Processes a single semester
     public List<Course> processSemester(String semesterDir) throws Exception {
-        Date[] dates = dateValidator.validateDatesTxt(semesterDir);
-        Date preRegistrationStart = dates[0];
-        Date addDeadline = dates[1];
-        
+        LocalDate[] dates = dateValidator.validateDatesTxt(semesterDir);
+        LocalDate preRegistrationStart = dates[0];
+        LocalDate addDeadline = dates[1];
+
         List<Snapshot> validSnapshots = snapshotProcessor.getValidSnapshots(semesterDir, preRegistrationStart, addDeadline);
         LocalDate lastSnapshotDate = validSnapshots.get(validSnapshots.size() - 1).getDate();
 
@@ -95,8 +95,8 @@ public class EnrollmentProjection {
     }
 
     // Generates the report for the projection
-    private void generateReport(List<Course> semesterData, Date preRegistrationStart, Date addDeadline, Date lastSnapshotDate) throws Exception {
-        return;
+    private void generateReport(List<Course> semesterData, LocalDate preRegistrationStart, LocalDate addDeadline, LocalDate lastSnapshotDate) throws Exception {
+        // Logic for generating the report goes here
     }
 
     // Generates snapshot path

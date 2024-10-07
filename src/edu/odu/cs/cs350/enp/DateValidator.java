@@ -2,19 +2,19 @@ package edu.odu.cs.cs350.enp;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 public class DateValidator {
-    private SimpleDateFormat dateFormat;
+    private DateTimeFormatter dateFormatter;
 
-    public DateValidator(SimpleDateFormat dateFormat) {
-        this.dateFormat = dateFormat;
+    public DateValidator(DateTimeFormatter dateFormatter) {
+        this.dateFormatter = dateFormatter;
     }
 
-    public Date[] validateDatesTxt(String semesterDir) throws IOException, ParseException {
+    public LocalDate[] validateDatesTxt(String semesterDir) throws IOException, DateTimeParseException {
         Path datesFile = getDatesFilePath(semesterDir);
         List<String> lines = readDatesFile(datesFile);
         return parseDates(lines);
@@ -36,9 +36,9 @@ public class DateValidator {
         return lines;
     }
 
-    private Date[] parseDates(List<String> lines) throws ParseException {
-        Date preRegistrationStart = dateFormat.parse(lines.get(0).trim());
-        Date addDeadline = dateFormat.parse(lines.get(1).trim());
-        return new Date[]{preRegistrationStart, addDeadline};
+    private LocalDate[] parseDates(List<String> lines) throws DateTimeParseException {
+        LocalDate preRegistrationStart = LocalDate.parse(lines.get(0).trim(), dateFormatter);
+        LocalDate addDeadline = LocalDate.parse(lines.get(1).trim(), dateFormatter);
+        return new LocalDate[]{preRegistrationStart, addDeadline};
     }
 }

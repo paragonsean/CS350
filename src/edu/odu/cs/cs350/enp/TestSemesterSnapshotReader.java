@@ -91,15 +91,16 @@ public class TestSemesterSnapshotReader {
         assertThat(snapshots, hasItems(snapshot1, snapshot2));
     }
 
+     /**
+     * Test method for {@link SemesterSnapshotReader#filterSnapshotsByDate(LocalDate, LocalDate)}.
+     */
     @Test
     public void testFilterSnapshotsByDate() {
-        // Add some snapshots for testing
-        snapshotReader.listSnapshots().add(new Snapshot("2024-01-12.csv", LocalDate.parse("2024-01-12", dateTimeFormatter)));
-        snapshotReader.listSnapshots().add(new Snapshot("2024-02-05.csv", LocalDate.parse("2024-02-05", dateTimeFormatter)));
-        
-        // Filter snapshots by date range
+        // Define the date range for filtering
         LocalDate startDate = LocalDate.parse("2024-01-01", dateTimeFormatter);
         LocalDate endDate = LocalDate.parse("2024-01-31", dateTimeFormatter);
+        
+        // Filter snapshots by date range
         List<Snapshot> filteredSnapshots = snapshotReader.filterSnapshotsByDate(startDate, endDate);
         
         // Ensure only the snapshot within the date range is returned
