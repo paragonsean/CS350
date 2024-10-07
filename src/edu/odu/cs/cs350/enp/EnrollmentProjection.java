@@ -115,17 +115,17 @@ public class EnrollmentProjection {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] argv) {
         try {
-            if (args.length < 4) {
+            if (argv.length < 4) {
                 System.out.println("Usage: java EnrollmentProjection <historical_dirs> <target_dir> <output_file> [<end_date>]");
                 System.exit(1);
             }
 
-            List<String> historicalSemesterDirs = extractHistoricalSemesterDirs(args);
-            String targetSemesterDir = args[args.length - 3];
-            String outputFile = args[args.length - 2];
-            String endDateStr = extractEndDateStr(args);
+            List<String> historicalSemesterDirs = extractHistoricalSemesterDirs(argv);
+            String targetSemesterDir = argv[argv.length - 3];
+            String outputFile = argv[argv.length - 2];
+            String endDateStr = extractEndDateStr(argv);
 
             EnrollmentProjection projectionSystem = new EnrollmentProjection(historicalSemesterDirs, targetSemesterDir, outputFile, endDateStr);
             projectionSystem.projectEnrollment();
@@ -136,18 +136,18 @@ public class EnrollmentProjection {
     }
 
     // Extracts historical semester directories from the arguments
-    protected static List<String> extractHistoricalSemesterDirs(String[] args) {
+    protected static List<String> extractHistoricalSemesterDirs(String[] argv) {
         List<String> historicalSemesterDirs = new ArrayList<>();
-        for (int i = 0; i < args.length - 3; i++) {
-            historicalSemesterDirs.add(args[i]);
+        for (int i = 0; i < argv.length - 3; i++) {
+            historicalSemesterDirs.add(argv[i]);
         }
         return historicalSemesterDirs;
     }
 
     // Extracts the end date string from the arguments if provided
-    protected static String extractEndDateStr(String[] args) {
-        if (args.length >= 5) {
-            return args[args.length - 1];
+    protected static String extractEndDateStr(String[] argv) {
+        if (argv.length >= 5) {
+            return argv[argv.length - 1];
         }
         return null;
     }
