@@ -31,8 +31,16 @@ public class Snapshot {
         this.snapshotDate = date;
         this.coursesInSemester = new ArrayList<>(coursesInSemester);  // Deep copy of the course list
     }
+    public Snapshot(String filename, LocalDate date) {
+        if (!verifyFilename(filename)) {
+            throw new IllegalArgumentException("Invalid filename format. It must be in 'yyyy-MM-dd.csv' format.");
+        }
+        this.filename = filename;
+        this.snapshotDate = date;
+        this.coursesInSemester = new ArrayList<>(coursesInSemester);  // Deep copy of the course list
+    }
       // Parameterized constructor with date only
-      public Snapshot(LocalDate date) {
+      public Snapshot(LocalDate date,ArrayList<Course> coursesInSemester) {
         this.snapshotDate = date;
         this.coursesInSemester = new ArrayList<>(); // Initialize empty course list
     }
@@ -64,11 +72,11 @@ public class Snapshot {
         return this.filename;
     }
 
-    public void setSnapshotDate(LocalDate date) {
+    public void setDate(LocalDate date) {
         this.snapshotDate = date;
     }
 
-    public LocalDate getSnapshotDate() {
+    public LocalDate getDate() {
         return this.snapshotDate;
     }
 
