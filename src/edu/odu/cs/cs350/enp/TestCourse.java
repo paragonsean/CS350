@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
-
 public class TestCourse {
 
     Course course1;
@@ -20,7 +19,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#Course(String, String, String, int, int, String, String, int, int, String)}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#Course(String, String, String, int, int, String, String, int, int, String)}.
      */
     @Test
     public void testCourseConstructor() {
@@ -37,7 +36,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#equals(Object)}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#equals(Object)}.
      */
     @Test
     public void testEquals() {
@@ -48,7 +47,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#hashCode()}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#hashCode()}.
      */
     @Test
     public void testHashCode() {
@@ -59,7 +58,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#clone()}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#clone()}.
      */
     @Test
     public void testClone() {
@@ -83,7 +82,7 @@ public class TestCourse {
     }
 
     /**
-     * Test method for {@link edu.odu.cs.cs350.enp.Course#toString()}.
+     * Test method for {@link edu.edu.odu.cs.cs350.enp.Course#toString()}.
      */
     @Test
     public void testToString() {
