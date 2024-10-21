@@ -11,7 +11,6 @@ repositories {
 
 dependencies {
     // JUnit for testing
-    // JUnit 5 (Jupiter) dependency
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
 
@@ -52,3 +51,18 @@ jar {
         )
     }
 }
+
+task generateDocs(type: Javadoc) {
+    description = 'Generates Javadoc API documentation'
+    source = sourceSets.main.allJava
+    classpath = sourceSets.main.compileClasspath
+    destinationDir = file("$buildDir/docs/javadoc")
+}
+
+task copyDocs(type: Copy) {
+    dependsOn generateDocs
+    from "$buildDir/docs/javadoc"
+    into "$buildDir/reports/javadoc"
+}
+
+check.dependsOn copyDocs
