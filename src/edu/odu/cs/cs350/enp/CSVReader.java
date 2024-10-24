@@ -90,13 +90,13 @@ public class CSVReader<T> {
         }
     }
 
-    private String[] readHeaders(BufferedReader br) throws IOException {
+    protected String[] readHeaders(BufferedReader br) throws IOException {
         String line = br.readLine(); // Read header
         if (line == null) return new String[0];
         return parseCSVLine(line);
     }
 
-    private List<T> readData(BufferedReader br, String[] headers) throws Exception {
+    protected List<T> readData(BufferedReader br, String[] headers) throws Exception {
         List<T> data = new ArrayList<>();
         String row;
         while ((row = br.readLine()) != null) {
