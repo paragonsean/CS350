@@ -17,14 +17,12 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.opencsv.CSVReader;
-import com.opencsv.exceptions.CsvValidationException;
 
 public class Semester implements Iterable<Snapshot> {
 
     private static final Logger logger = Logger.getLogger(Semester.class.getName());
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-
+    private CSVReader<Course> CSVReader = new CSVReader<Course>();
     private String name;
     private LocalDate preRegDate;
     private LocalDate addDeadline;
