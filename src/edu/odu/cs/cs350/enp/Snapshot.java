@@ -1,115 +1,134 @@
-package edu.odu.cs.cs350.enp;
+package org.example;
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Date;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class Snapshot {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class Snapshot implements Iterable<Course> {
+    private static final Logger logger = LoggerFactory.getLogger(Snapshot.class);
+
     private String filename;  // Filename in the format 'yyyy-MM-dd.csv'
     private LocalDate snapshotDate;  // Snapshot date
-    private ArrayList<Course> coursesInSemester;  // Courses for this snapshot
+    private Map<String, Course> coursesByKey;  // Courses for this snapshot, stored by course key
 
-    // Date format for verifying file names
     private static final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private static final Pattern DATE_PATTERN = Pattern.compile("(\\d{4}-\\d{2}-\\d{2})");
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     // Default constructor
     public Snapshot() {
-        this.filename = "00000000.csv";
+        this.filename = "0000-00-00.csv";
         this.snapshotDate = LocalDate.now();
-        this.coursesInSemester = new ArrayList<>();
+        this.coursesByKey = new HashMap<>();
     }
 
-    // Parameterized constructor
-    public Snapshot(String filename, LocalDate date, ArrayList<Course> coursesInSemester) {
-        if (!verifyFilename(filename)) {
-            throw new IllegalArgumentException("Invalid filename format. It must be in 'yyyy-MM-dd.csv' format.");
-        }
+    // Parameterized constructor that attempts to parse the date from the filename
+    public Snapshot(String filename, List<Course> coursesInSemester) {
         this.filename = filename;
-        this.snapshotDate = date;
-        this.coursesInSemester = new ArrayList<>(coursesInSemester);  // Deep copy of the course list
-    }
-
-    // Another parameterized constructor for filename and date only
-    public Snapshot(String filename, LocalDate date) {
-        if (!verifyFilename(filename)) {
-            throw new IllegalArgumentException("Invalid filename format. It must be in 'yyyy-MM-dd.csv' format.");
+        this.snapshotDate = extractDateFromFilename(filename, DATE_PATTERN, DATE_FORMATTER);
+        if (this.snapshotDate == null) {
+            throw new IllegalArgumentException("Invalid filename format. Date not found in 'yyyy-MM-dd.csv' format.");
         }
-        this.filename = filename;
-        this.snapshotDate = date;
-        this.coursesInSemester = new ArrayList<>();
+        this.coursesByKey = new HashMap<>();
+        for (Course course : coursesInSemester) {
+            addCourse(course);
+        }
     }
 
-    // Parameterized constructor with date and course list
-    public Snapshot(LocalDate date, ArrayList<Course> coursesInSemester) {
+    // Parameterized constructor with a known date
+    public Snapshot(LocalDate date, List<Course> coursesInSemester) {
         this.snapshotDate = date;
-        this.coursesInSemester = new ArrayList<>(coursesInSemester);  // Deep copy of the course list
+        this.coursesByKey = new HashMap<>();
+        for (Course course : coursesInSemester) {
+            addCourse(course);
+        }
     }
 
-    // Method to add a course to the list of courses
-    public void addCourse(Course addCourse) {
-        coursesInSemester.add(addCourse);
+    // Method to add a course to the snapshot with logging for add and merge actions
+    public void addCourse(Course course) {
+        String courseKey = course.getCourseKey();
+        if (coursesByKey.containsKey(courseKey)) {
+            logger.info("Merging course: {} with existing course in snapshot on date {}", courseKey, snapshotDate);
+            coursesByKey.get(courseKey).mergeCourse(course);
+        } else {
+            logger.info("Adding new course: {} to snapshot on date {}", courseKey, snapshotDate);
+            coursesByKey.put(courseKey, course);
+        }
     }
 
     // Method to get a course by its course code (CRSE)
     public Course getCourse(String courseCode) {
-        for (Course course : coursesInSemester) {
-            if (course.getCRSE().equals(courseCode)) {
-                return course;
+        return coursesByKey.get(courseCode);
+    }
+
+    // Get total enrollments for all courses in this snapshot
+    public Map<String, Integer> getCourseEnrollments() {
+        Map<String, Integer> courseEnrollments = new HashMap<>();
+        for (Map.Entry<String, Course> entry : coursesByKey.entrySet()) {
+            String courseKey = entry.getKey();
+            Course course = entry.getValue();
+            int totalEnrollment = course.getTotalOfferingEnrollment();
+            courseEnrollments.put(courseKey, totalEnrollment);
+        }
+        return courseEnrollments;
+    }
+
+    // Calculate the total section enrollment for all courses in this snapshot
+    public int getTotalSectionEnrollment() {
+        return coursesByKey.values().stream()
+                .mapToInt(Course::getTotalSectionEnrollment)
+                .sum();
+    }
+
+    // Calculate the total section capacity for all courses in this snapshot
+    public int getTotalSectionCapacity() {
+        return coursesByKey.values().stream()
+                .mapToInt(Course::getTotalSectionCapacity)
+                .sum();
+    }
+
+    // Extracts date from filename using regex pattern and formatter
+    private LocalDate extractDateFromFilename(String filename, Pattern datePattern, DateTimeFormatter formatter) {
+        Matcher matcher = datePattern.matcher(filename);
+        if (matcher.find()) {
+            try {
+                return LocalDate.parse(matcher.group(1), formatter);
+            } catch (DateTimeParseException e) {
+                logger.warn("Error parsing date from filename {}: {}", filename, e.getMessage());
             }
         }
         return null;
     }
 
-    // Getters and Setters
-    public void setFileName(String filename) {
-        if (!verifyFilename(filename)) {
-            throw new IllegalArgumentException("Invalid filename format. It must be in 'yyyy-MM-dd.csv' format.");
-        }
-        this.filename = filename;
-    }
-
+    // Getters for filename and date
     public String getFileName() {
         return this.filename;
     }
 
-    public void setDate(LocalDate date) {
-        this.snapshotDate = date;
+    @Override
+    public Iterator<Course> iterator() {
+        return coursesByKey.values().iterator();
     }
-
+    
     public LocalDate getDate() {
         return this.snapshotDate;
-    }
-
-    public List<Course> getCourseList() {
-        return new ArrayList<>(this.coursesInSemester);  // Return a deep copy of the course list
-    }
-
-    // Verify if the filename matches the 'yyyy-MM-dd.csv' format
-    private boolean verifyFilename(String fileName) {
-        if (!fileName.endsWith(".csv")) {
-            return false;
-        }
-
-        String datePart = fileName.substring(0, fileName.length() - 4);
-
-        try {
-            dateFormat.setLenient(false);  // Ensure strict parsing of the date format
-            dateFormat.parse(datePart);    // This will throw ParseException if the format is invalid
-        } catch (ParseException e) {
-            return false;
-        }
-
-        return true;
     }
 
     // toString method to provide a human-readable representation of the snapshot
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("Snapshot Filename: " + filename + "\nDate: " + snapshotDate + "\nCourses:\n");
-        for (Course course : coursesInSemester) {
+        for (Course course : coursesByKey.values()) {
             sb.append(course.toString()).append("\n");
         }
         return sb.toString();
